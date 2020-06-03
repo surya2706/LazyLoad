@@ -1,26 +1,33 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { connect } from 'react-redux';
 
-function App() {
+import { fetch_data } from './actions';
+
+const App = ({ payload, fetch_data }) => {
+  const onClickHandler = (e) => {
+    e.preventDefault();
+    fetch_data();
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <button onClick={onClickHandler}>Click me</button>
+      <br />
+      <ol>
+        {payload &&
+          payload.map((user, index) => <li key={index}>{user.name}</li>)}
+      </ol>
     </div>
   );
-}
+};
 
-export default App;
+const mapStateToProps = ({
+  fetchReducer: { fetchingData, fetchCompleted, fetchFailed, payload, error },
+}) => ({
+  fetchingData,
+  fetchCompleted,
+  fetchFailed,
+  error,
+  payload,
+});
+
+export default connect(mapStateToProps, { fetch_data })(App);
